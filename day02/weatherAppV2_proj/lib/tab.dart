@@ -1,21 +1,48 @@
 import 'package:flutter/material.dart';
 import 'geolocation.dart';
+import 'currently.dart';
+import 'today.dart';
+import 'weekly.dart';
 
 class MyTab extends StatelessWidget {
-  final City? location;
+  final WeatherData? weatherData;
   final String time;
 
-  const MyTab({super.key, required this.location, required this.time});
+  const MyTab({super.key, required this.weatherData, required this.time});
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Center(child: Text(location.toString())),
-        Center(child: Text(time)),
-      ],
-    ));
+    if (weatherData == null) {
+      return const Center(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Center(
+              child: Text(
+                  'Geolocation not available, please enable it in your app settings or search a city')),
+        ],
+      ));
+    } else if (time == 'Currently') {
+      return Currently(
+          weatherData:
+              weatherData); // Return Currently widget if time is 'currently'
+    } else if (time == 'Today') {
+      return Today(
+          weatherData:
+              weatherData); // Return Currently widget if time is 'currently'
+    } else if (time == 'Weekly') {
+      return Weekly(
+          weatherData:
+              weatherData); // Return Currently widget if time is 'currently'
+    } else {
+      return Center(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Center(child: Text(weatherData?.location.toString() ?? 'Loading...')),
+          Center(child: Text(time)),
+        ],
+      ));
+    }
   }
 }

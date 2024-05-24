@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:weatherapp_proj/textbox.dart';
+
 import 'meteo.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
@@ -22,7 +24,21 @@ class City {
   }
 }
 
-Future<City?> getLocation() async {
+class WeatherData {
+  final City location;
+  final Meteo currentWeather;
+  final List<Meteo> hourlyWeather;
+  final List<Meteo> weeklyWeather;
+
+  WeatherData({
+    required this.location,
+    required this.currentWeather,
+    required this.hourlyWeather,
+    required this.weeklyWeather,
+  });
+}
+
+Future<WeatherData?> getWeatherData() async {
   Location location = Location();
 
   bool serviceEnabled;
@@ -47,11 +63,35 @@ Future<City?> getLocation() async {
 
   locationData = await location.getLocation();
   City city = await getCityByLocation(locationData);
-  getCurrentMeteo(city);
-  getHourlyMeteo(city);
-  getWeekMeteo(city);
+  Meteo current = await getCurrentMeteo(city);
+  List<Meteo> hourly = await getHourlyMeteo(city);
+  List<Meteo> weekly = await getWeekMeteo(city);
 
-  return city;
+  return WeatherData(
+    location: city,
+    currentWeather: current,
+    hourlyWeather: hourly,
+    weeklyWeather: weekly,
+  );
+}
+
+Future<WeatherData?> getWeatherDataBySearch(CityResult result) async {
+  LocationData locationData = LocationData.fromMap({
+    'latitude': result.latitude,
+    'longitude': result.longitude,
+  });
+
+  City city = await getCityByLocation(locationData);
+  Meteo current = await getCurrentMeteo(city);
+  List<Meteo> hourly = await getHourlyMeteo(city);
+  List<Meteo> weekly = await getWeekMeteo(city);
+
+  return WeatherData(
+    location: city,
+    currentWeather: current,
+    hourlyWeather: hourly,
+    weeklyWeather: weekly,
+  );
 }
 
 Future<City> getCityByLocation(LocationData location) async {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'tab.dart';
 import 'geolocation.dart';
+import 'textbox.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,50 +30,18 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  MyHomePageState get createState => MyHomePageState();
 }
 
-class TextBox extends StatelessWidget {
-  final Function(City?) setLocation;
-  const TextBox({super.key, required this.setLocation});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
-          children: [
-            const Icon(Icons.search),
-            const Flexible(
-              child: TextField(
-                // onSubmitted: (value) => setLocation(value),
-                decoration: InputDecoration(
-                    border: InputBorder.none, hintText: 'Search'),
-              ),
-            ),
-            IconButton(
-              icon: const Icon(Icons.near_me),
-              onPressed: () => getLocation().then((city) {
-                if (city != null) {
-                  setLocation(city);
-                }
-              }),
-            )
-          ],
-        ));
-  }
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  City? _location;
+class MyHomePageState extends State<MyHomePage> {
+  WeatherData? _weatherData;
   @override
   initState() {
     super.initState();
-    getLocation().then((city) {
-      if (city != null) {
+    getWeatherData().then((weatherData) {
+      if (weatherData != null) {
         setState(() {
-          _location = city;
+          _weatherData = weatherData;
         });
       }
     });
@@ -87,19 +56,27 @@ class _MyHomePageState extends State<MyHomePage> {
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             title: TextBox(
-              setLocation: (location) => setState(() {
-                _location = location;
+              setWeatherData: (weatherData) => setState(() {
+                _weatherData = weatherData;
               }),
+              getWeatherDataBySearch: (cityResult) async {
+                if (cityResult != null) {
+                  var weatherData = await getWeatherDataBySearch(cityResult);
+                  setState(() {
+                    _weatherData = weatherData;
+                  });
+                }
+              },
             ),
           ),
           body: ValueListenableBuilder(
-            valueListenable: ValueNotifier<City?>(_location),
+            valueListenable: ValueNotifier<WeatherData?>(_weatherData),
             builder: (context, value, child) {
               return TabBarView(
                 children: <Widget>[
-                  Center(child: MyTab(location: value, time: 'Currently')),
-                  Center(child: MyTab(location: value, time: 'Today')),
-                  Center(child: MyTab(location: value, time: 'Weekly')),
+                  Center(child: MyTab(weatherData: value, time: 'Currently')),
+                  Center(child: MyTab(weatherData: value, time: 'Today')),
+                  Center(child: MyTab(weatherData: value, time: 'Weekly')),
                 ],
               );
             },

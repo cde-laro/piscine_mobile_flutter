@@ -115,7 +115,12 @@ Future<List<Meteo>> getWeekMeteo(City city) async {
     {
       'latitude': city.locationData.latitude.toString(),
       'longitude': city.locationData.longitude.toString(),
-      "daily": ["weather_code", "temperature_2m_max", "temperature_2m_min"],
+      "daily": [
+        "weather_code",
+        "temperature_2m_max",
+        "temperature_2m_min",
+        "wind_speed_10m_max"
+      ],
       "timezone": "Europe/Berlin",
     },
   );
@@ -126,14 +131,16 @@ Future<List<Meteo>> getWeekMeteo(City city) async {
     var dailyTemperatureMax = data['daily']['temperature_2m_max'];
     var dailyTemperatureMin = data['daily']['temperature_2m_min'];
     var dailyWeatherCode = data['daily']['weather_code'];
+    var dailyWindSpeed = data['daily']['wind_speed_10m_max'];
     var meteos = <Meteo>[];
     for (var index = 0; index < dailyData.length; index++) {
       var meteo = Meteo(
         temperature:
-            '${dailyTemperatureMin[index].toString()}/${dailyTemperatureMax[index].toString()} ${data['daily_units']['temperature_2m_min']}',
+            '${dailyTemperatureMin[index].toString()} - ${dailyTemperatureMax[index].toString()} ${data['daily_units']['temperature_2m_min']}',
         description:
             await WeatherDescription.getDescription(dailyWeatherCode[index]),
-        windSpeed: '',
+        windSpeed:
+            '${dailyWindSpeed[index].toString()} ${data['daily_units']['wind_speed_10m_max']}',
         time: dailyData[index].toString(),
       );
       meteos.add(meteo);
