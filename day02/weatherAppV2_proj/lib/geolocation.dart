@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:weatherapp_proj/textbox.dart';
-
 import 'meteo.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
@@ -44,7 +43,6 @@ Future<WeatherData?> getWeatherData() async {
   bool serviceEnabled;
   PermissionStatus permissionGranted;
   LocationData locationData;
-
   serviceEnabled = await location.serviceEnabled();
   if (!serviceEnabled) {
     serviceEnabled = await location.requestService();
@@ -60,13 +58,11 @@ Future<WeatherData?> getWeatherData() async {
       return null;
     }
   }
-
   locationData = await location.getLocation();
   City city = await getCityByLocation(locationData);
   Meteo current = await getCurrentMeteo(city);
   List<Meteo> hourly = await getHourlyMeteo(city);
   List<Meteo> weekly = await getWeekMeteo(city);
-
   return WeatherData(
     location: city,
     currentWeather: current,
@@ -81,7 +77,13 @@ Future<WeatherData?> getWeatherDataBySearch(CityResult result) async {
     'longitude': result.longitude,
   });
 
-  City city = await getCityByLocation(locationData);
+  City city = City(
+    name: result.name,
+    admin: result.admin1,
+    country: result.country,
+    locationData: locationData,
+  );
+  ;
   Meteo current = await getCurrentMeteo(city);
   List<Meteo> hourly = await getHourlyMeteo(city);
   List<Meteo> weekly = await getWeekMeteo(city);

@@ -14,7 +14,7 @@ class WeatherDescription {
       if (response.statusCode == 200) {
         _cachedDescriptions = jsonDecode(response.body);
       } else {
-        throw Exception('Failed to load descriptions');
+        return 'No description available';
       }
     }
     return _cachedDescriptions![weatherCode.toString()]['day']['description'] ??
@@ -66,7 +66,12 @@ Future<Meteo> getCurrentMeteo(City city) async {
     );
     return meteo;
   } else {
-    throw Exception('Failed to load meteo');
+    return Meteo(
+      temperature: 'No data',
+      description: 'No data',
+      windSpeed: 'No data',
+      time: 'No data',
+    );
   }
 }
 

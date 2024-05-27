@@ -12,6 +12,7 @@ class Today extends StatelessWidget {
     return weatherData?.hourlyWeather != null
         ? Column(
             children: [
+              Text(weatherData?.location.toString() ?? 'Loading...'),
               const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Row(

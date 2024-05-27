@@ -12,6 +12,7 @@ class Weekly extends StatelessWidget {
     return weatherData?.weeklyWeather != null
         ? Column(
             children: [
+              Text(weatherData?.location.toString() ?? 'Loading...'),
               const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Row(

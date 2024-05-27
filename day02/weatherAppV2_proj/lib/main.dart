@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'error.dart';
 import 'tab.dart';
 import 'geolocation.dart';
 import 'textbox.dart';
@@ -30,11 +30,13 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  MyHomePageState get createState => MyHomePageState();
+  MyHomePageState createState() => MyHomePageState();
 }
 
 class MyHomePageState extends State<MyHomePage> {
   WeatherData? _weatherData;
+  int errorCode = 0;
+
   @override
   initState() {
     super.initState();
@@ -42,6 +44,11 @@ class MyHomePageState extends State<MyHomePage> {
       if (weatherData != null) {
         setState(() {
           _weatherData = weatherData;
+          errorCode = 0;
+        });
+      } else {
+        setState(() {
+          errorCode = 3;
         });
       }
     });
@@ -64,23 +71,33 @@ class MyHomePageState extends State<MyHomePage> {
                   var weatherData = await getWeatherDataBySearch(cityResult);
                   setState(() {
                     _weatherData = weatherData;
+                    errorCode = 0;
+                  });
+                } else {
+                  setState(() {
+                    errorCode = 2;
                   });
                 }
               },
             ),
           ),
-          body: ValueListenableBuilder(
-            valueListenable: ValueNotifier<WeatherData?>(_weatherData),
-            builder: (context, value, child) {
-              return TabBarView(
-                children: <Widget>[
-                  Center(child: MyTab(weatherData: value, time: 'Currently')),
-                  Center(child: MyTab(weatherData: value, time: 'Today')),
-                  Center(child: MyTab(weatherData: value, time: 'Weekly')),
-                ],
-              );
-            },
-          ),
+          body: errorCode != 0
+              ? ErrorScreen(errorCode: errorCode)
+              : ValueListenableBuilder(
+                  valueListenable: ValueNotifier<WeatherData?>(_weatherData),
+                  builder: (context, value, child) {
+                    return TabBarView(
+                      children: <Widget>[
+                        Center(
+                            child:
+                                MyTab(weatherData: value, time: 'Currently')),
+                        Center(child: MyTab(weatherData: value, time: 'Today')),
+                        Center(
+                            child: MyTab(weatherData: value, time: 'Weekly')),
+                      ],
+                    );
+                  },
+                ),
           bottomNavigationBar: const BottomAppBar(
             child: TabBar(
               tabs: [
