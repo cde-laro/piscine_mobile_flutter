@@ -15,8 +15,8 @@ class Currently extends StatelessWidget {
         Text(
           weatherData?.location.name.toString() ?? 'Loading...',
           style: const TextStyle(
-            color: Colors.blueAccent,
-            fontSize: 16.0,
+            color: Colors.orange,
+            fontSize: 26.0,
           ),
         ),
         Text(

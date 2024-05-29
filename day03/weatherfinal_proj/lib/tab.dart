@@ -14,33 +14,30 @@ class MyTab extends StatelessWidget {
   Widget build(BuildContext context) {
     if (weatherData == null) {
       return const Center(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Center(child: Text('Loading')),
-        ],
-      ));
+        child: CircularProgressIndicator(),
+      );
     } else if (time == 'Currently') {
-      return Currently(
-          weatherData:
-              weatherData); // Return Currently widget if time is 'currently'
+      return SingleChildScrollView(
+        child: Currently(weatherData: weatherData),
+      );
     } else if (time == 'Today') {
-      return Today(
-          weatherData:
-              weatherData); // Return Currently widget if time is 'currently'
+      return SingleChildScrollView(
+        child: Today(weatherData: weatherData),
+      );
     } else if (time == 'Weekly') {
-      return Weekly(
-          weatherData:
-              weatherData); // Return Currently widget if time is 'currently'
+      return SingleChildScrollView(
+        child: Weekly(weatherData: weatherData),
+      );
     } else {
       return Center(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Center(child: Text(weatherData?.location.toString() ?? 'Loading...')),
-          Center(child: Text(time)),
-        ],
-      ));
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(weatherData?.location.toString() ?? 'Loading...'),
+            Text(time),
+          ],
+        ),
+      );
     }
   }
 }

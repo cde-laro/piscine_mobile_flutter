@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'geolocation.dart';
 import 'package:intl/intl.dart';
+import 'today_graph.dart';
 
 class Today extends StatelessWidget {
   final WeatherData? weatherData;
@@ -15,8 +16,8 @@ class Today extends StatelessWidget {
               Text(
                 weatherData?.location.name.toString() ?? 'Loading...',
                 style: const TextStyle(
-                  color: Colors.blueAccent,
-                  fontSize: 16.0,
+                  color: Colors.orange,
+                  fontSize: 26.0,
                 ),
               ),
               Text(
@@ -26,7 +27,9 @@ class Today extends StatelessWidget {
                   fontSize: 14.0,
                 ),
               ),
-              Expanded(
+              TemperatureChart(meteos: weatherData!.hourlyWeather),
+              SizedBox(
+                height: 200,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: weatherData!.hourlyWeather.length,
@@ -54,8 +57,8 @@ class Today extends StatelessWidget {
                           Text(
                             meteo.temperature,
                             style: const TextStyle(
-                              color: Colors.orange, // Set text color to orange
-                              fontSize: 18.0, // Set text size to 24
+                              color: Colors.orange,
+                              fontSize: 18.0,
                             ),
                           ),
                           Row(
